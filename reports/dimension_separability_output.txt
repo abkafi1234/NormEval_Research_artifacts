@@ -1,0 +1,27 @@
+FLORES-200, 15 languages: pairwise Spearman rho (p)
+  CR_morph vs KL      : rho=+0.732  p=0.002
+  CR_morph vs ANLD    : rho=+0.850  p=0.000
+  CR_morph vs IRS     : rho=-0.750  p=0.001
+  CR_morph vs AES_b1  : rho=+1.000  p=0.000
+  KL       vs ANLD    : rho=+0.889  p=0.000
+  KL       vs IRS     : rho=-0.650  p=0.009
+  KL       vs AES_b1  : rho=+0.732  p=0.002
+  ANLD     vs IRS     : rho=-0.807  p=0.000
+  ANLD     vs AES_b1  : rho=+0.850  p=0.000
+  IRS      vs AES_b1  : rho=-0.750  p=0.001
+  language ranked most severe/highest per dimension: {'CR_morph': 'arb_Arab', 'KL': 'fin_Latn', 'ANLD': 'arb_Arab', 'IRS': 'nld_Latn', 'AES_b1': 'arb_Arab'}
+
+English BTSD, order per dimension (highest first):
+  CR   : Snowball > Porter > SpaCy > WordNet
+  IRS  : WordNet > SpaCy > Snowball > Porter
+  AES  : SpaCy > Snowball > Porter > WordNet
+  ANLD : Porter > Snowball > SpaCy > WordNet
+  KL   : Porter > Snowball > SpaCy > WordNet
+
+AES_beta across FLORES: rank agreement with CR_morph and IRS, and prediction of retrieval loss
+  beta=0.1 : rho(AES,CR_morph)=-0.686  rho(AES,IRS)=+0.971  rho(AES,retrieval delta)=+0.701 (p=0.005)
+  beta=0.25: rho(AES,CR_morph)=+0.154  rho(AES,IRS)=+0.361  rho(AES,retrieval delta)=+0.327 (p=0.253)
+  beta=0.5 : rho(AES,CR_morph)=+0.964  rho(AES,IRS)=-0.625  rho(AES,retrieval delta)=-0.371 (p=0.191)
+  beta=1.0 : rho(AES,CR_morph)=+1.000  rho(AES,IRS)=-0.750  rho(AES,retrieval delta)=-0.420 (p=0.135)
+  beta=2.0 : rho(AES,CR_morph)=+1.000  rho(AES,IRS)=-0.750  rho(AES,retrieval delta)=-0.420 (p=0.135)
+  beta=4.0 : rho(AES,CR_morph)=+1.000  rho(AES,IRS)=-0.750  rho(AES,retrieval delta)=-0.420 (p=0.135)

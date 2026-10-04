@@ -1,0 +1,4 @@
+n = 14 languages: arb_Arab, dan_Latn, deu_Latn, fin_Latn, fra_Latn, hun_Latn, ita_Latn, nld_Latn, nob_Latn, por_Latn, ron_Latn, rus_Cyrl, spa_Latn, swe_Latn
+dense delta R@1 (raw -> full) vs BM25 delta R@1 (tok -> full): Spearman rho = -0.1956043956, two-sided p = 0.5027500913
+dense delta R@1 (raw -> full) vs BM25 delta MRR@10 (stemming step): Spearman rho = -0.1780219780, two-sided p = 0.5425969526
+Manuscript (Section 'Lexical Retrieval'): rho = -0.20, p = 0.50 (first line).

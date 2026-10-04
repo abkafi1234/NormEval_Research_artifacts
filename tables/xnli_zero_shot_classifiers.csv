@@ -1,0 +1,3 @@
+condition,n_train,encoder,n_iter,converged,fit_seconds
+orig,392702,sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2,178,True,293.7
+norm,392702,sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2,187,True,103.4

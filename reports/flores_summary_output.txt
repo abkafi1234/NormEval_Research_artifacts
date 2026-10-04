@@ -1,0 +1,9 @@
+# code/flores_benchmark/summarize.py cannot run on these artifacts: it loads tier_d_bangla.json, which
+# run.py --full deliberately does not produce (tier D was dropped; see run.py). No reported number
+# depends on it. Output of the attempted run:
+Traceback (most recent call last):
+  File "/Users/kafi/Research/NormEvaluator_pypi/paper update/reproducibility/code/flores_benchmark/summarize.py", line 19, in <module>
+    D = load("tier_d_bangla.json")
+  File "/Users/kafi/Research/NormEvaluator_pypi/paper update/reproducibility/code/flores_benchmark/summarize.py", line 12, in load
+    with open(os.path.join(ART, name), encoding="utf-8") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/kafi/Research/NormEvaluator_pypi/paper update/reproducibility/code/flores_benchmark/artifacts/tier_d_bangla.json'
