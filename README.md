@@ -254,3 +254,68 @@ shasum -a 256 -c MANIFEST.sha256       # or: sha256sum -c MANIFEST.sha256
   (`normeval-main/Reproducible Experiment/Dataset/`), with checksums in
   `environment/data_checksums.sha256`. The normalized texts derived from them are in
   `outputs/ablation/texts/`.
+
+## Revision R1: recent normalizers (added 2026-10)
+
+Added for the first revision. Nothing above this section was changed, and no earlier file was
+modified except this README, `outputs.zip` (rebuilt) and `MANIFEST.sha256` (regenerated).
+
+**What was run.** Three recent normalizers under the protocol, controls, folds and seeds of the
+original experiments. Results are in Section 5.7 and Tables 12-15 of the revised manuscript.
+
+| Normalizer | What it is | Applied to |
+|---|---|---|
+| Stanza 1.15.0 lemmatizer | neural pipeline (tokenize, mwt, pos, lemma), one model per language | FLORES-200 (15 languages), Belebele (15), XNLI (6, with MultiNLI training text), English BTSD |
+| Bkit 0.0.9 lemmatizer | rule-based Bangla lemmatizer of the Bkit toolkit (BanSuite) | Bangla BTSD, Bangla sentiment, Belebele Bangla |
+| LLM lemmatizer | `Qwen/Qwen3-4B-Instruct-2507`, bitsandbytes 4-bit (nf4), greedy decoding, five in-context examples per language from Universal Dependencies | FLORES-200 (15 languages + Bangla), Belebele (16), English and Bangla BTSD, Bangla sentiment |
+
+A lemmatizer is applied to the raw sentence, and the orthographic stage is applied to its
+output, so the "full" condition is comparable with orthographic stage + Snowball. The Snowball
+pipeline was measured again in the same run (`outputs/r1/flores/snowball.json`) and reproduces
+`tab:flores_predict`.
+
+**Where things are.**
+
+- `code/experiments_r1/`: the scripts as run.
+  - `r1_norm.py` produces the normalized text for one method and one text set and caches it.
+    It holds the LLM instruction and the validity rule.
+  - `r1_ud_fewshot.py` downloads the treebanks, picks the in-context examples and scores the
+    LLM against held-out gold lemmas.
+  - `r1_flores.py` (profile and dense retrieval), `r1_bm25.py` (Belebele), `r1_ablation.py`
+    (classification corpora), `r1_xnli.py` (XNLI with Stanza), `r1_summary.py` (collects
+    everything into `summary_r1.json`).
+  - `make_r1_results.py` turns the stored outputs into the four tables and every number
+    quoted in Section 5.7.
+  - `env.sh`, `llm_stage.sh`, `xnli_stanza_cpu.sh`, `after_llm.sh`: the launchers. These use
+    paths on the author's machine and are kept as records of the run.
+- `outputs/r1/`: every raw output. `summary_r1.json` is the file the tables are built from.
+- `outputs/r1/normalized_texts/<method>/<text set>.json`: input and output text of each new
+  normalizer, with the settings used (`meta`). For the LLM, `meta` holds the system message,
+  the instruction, the in-context examples, and the number of retried and fallback units.
+- `outputs/r1/llm_in_context/`: the in-context examples (`fewshot.json`) and the held-out
+  lemma accuracy of the LLM per language.
+- `outputs/r1/logs/`: run logs.
+- `environment/env_r1_overlay.txt`: packages added on top of `env_freeze.txt`.
+- `tables/r1_*.csv`: flat tables behind Tables 12-15 and the quoted numbers.
+
+**What a reader should know.**
+
+- The LLM is one small model under one prompt. On held-out Universal Dependencies sentences it
+  reproduced the gold lemma for 46-94% of all tokens but for 7-71% (median 26%) of the tokens
+  whose lemma differs from the form (`tables/r1_llm_heldout_accuracy.csv`). The held-out score
+  uses only sentences whose output has as many words as the gold sentence has tokens
+  (`length_matched`, 12 to 58 of 60 sentences; 19 of 20 for Bengali).
+- Of 99,709 sentence units sent to the LLM, 42 failed the length check twice and were left
+  unlemmatized. The counts per text set are in each `meta`.
+- The LLM was not run on XNLI: the 519,214 MultiNLI training sentences were beyond the
+  available computation (one 8 GB GPU; about 0.75 s per sentence).
+- The LLM run was stopped once for a timing check and restarted in two stages. Text sets
+  finished before the stop were kept; the Arabic FLORES set, half done at the stop, was
+  redone. `after_llm.sh` is the launcher of the first attempt and `llm_stage.sh` of the second.
+  `r1_llm_bench.py` is the timing check; it produced no reported number.
+- An 8-billion-parameter model of the same family was tried and did not fit in memory with the
+  in-context examples. It produced no reported number.
+- The Stanza output for the MultiNLI training sentences (74 MB) is not included; the XNLI
+  results computed from it are in `outputs/r1/xnli_stanza/`.
+- BanglaLem (a fine-tuned BanglaT5 lemmatizer) was considered and not run, because we could not
+  find released trained weights.
